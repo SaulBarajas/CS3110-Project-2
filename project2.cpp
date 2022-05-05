@@ -253,7 +253,7 @@ bool checkIfValid(string input)
                 break;
             }
         }
-        
+
 
         //Check for invalid conditions for '_'
         if (input.at(i) == '_')
@@ -286,7 +286,7 @@ bool checkIfValid(string input)
 }
 
 
-float eLiteral(string input, int positionE){
+float eLiteral(string input, int positionE) {
     string temp = "";
     int exponent;
     int exponentCalc = 1;
@@ -371,7 +371,7 @@ float proj1(string input) {
         }
     }
 
-    if (checkE == true && checkF == false){
+    if (checkE == true && checkF == false) {
         return eLiteral(input, positionE);
     }
 
@@ -402,7 +402,7 @@ stack<string> turingMachine(string& trimmed) {
     for (int i = 0; trimmed[i] != '\0'; i++) {
 
         //Sets up value stacks
-        if ((trimmed[i] == '+' || trimmed[i] == '-') && (trimmed[i-1] == 'e' || trimmed[i-1] == 'E')){
+        if ((trimmed[i] == '+' || trimmed[i] == '-') && (trimmed[i - 1] == 'e' || trimmed[i - 1] == 'E')) {
             temporaryVal += trimmed[i];
         }
         else if (trimmed[i] != '(' && trimmed[i] != ')' && trimmed[i] != '*' && trimmed[i] != '/' && trimmed[i] != '+' && trimmed[i] != '-') {
@@ -455,7 +455,7 @@ stack<string> turingMachine(string& trimmed) {
                             operand.push(temporaryOp);
                         }
                     }
-                    else{
+                    else {
                         operand.push(temporaryOp);
                     }
                 }
@@ -510,20 +510,20 @@ float evaluatePostFix(stack<string>& postfix) {
     }
     cout << "string: " << postfixString << endl;
     for (int i = 0; postfixString[i] != '\0'; i++) {
-        if (postfixString[i] == 'e' || postfixString[i] == 'E'){
+        if (postfixString[i] == 'e' || postfixString[i] == 'E') {
             checkE = true;
         }
-        if ((postfixString[i] == '+' || postfixString[i] == '-') && (postfixString[i-1] == 'e' || postfixString[i-1] == 'E')) {
+        if ((postfixString[i] == '+' || postfixString[i] == '-') && (postfixString[i - 1] == 'e' || postfixString[i - 1] == 'E')) {
             temp += postfixString[i];
             continue;
         }
         else if (postfixString[i] == '*' || postfixString[i] == '/' || postfixString[i] == '+' || postfixString[i] == '-') {
             //gets top 2 of evaluation stack if an operator is scanned
             float2 = evaluation.top();
-            cout<<float2<<endl;
+            cout << float2 << endl;
             evaluation.pop();
             float1 = evaluation.top();
-            cout<<float1<<endl;
+            cout << float1 << endl;
             evaluation.pop();
 
             //Does the evaluation for the top 2 floats in stack
@@ -553,7 +553,7 @@ float evaluatePostFix(stack<string>& postfix) {
         temp += postfixString[i];
 
         //Uses project 1 to convert an f literal then pushes to float stack
-        
+
         if ((postfixString[i] == 'f' || postfixString[i] == 'F') && postfixString[i + 1] == ' ') {
             //Use project 1 dfa to convert, INPUT NEEDS TO BE EDITED IN PROJECT 1
             conversion = proj1(temp);
@@ -563,13 +563,13 @@ float evaluatePostFix(stack<string>& postfix) {
             continue;
         }
         if ((postfixString[i] != 'f' && postfixString[i] != 'F') && postfixString[i + 1] == ' ') {
-            if(checkE == true){
+            if (checkE == true) {
                 conversion = proj1(temp);
                 evaluation.push(conversion);
                 checkE = false;
                 temp = "";
             }
-            else{
+            else {
                 conversion = stringConversionFloat(temp);
                 evaluation.push(conversion);
                 temp = "";
@@ -597,13 +597,14 @@ bool checkValid(string input)
     int closeCounter = 0;
     int eCounter = 0;
     int fCounter = 0;
+    int operantCounter = 0;
     for (int i = 0; i < input.length(); i++)
     {
         //All the conditions to check if 'e' vioaltes any of the conditions
         if (input.at(i) == 'e' || input.at(i) == 'E')
         {
-            
-            
+
+
             //if e is the first in the input
             if (i == 0)
             {
@@ -627,6 +628,20 @@ bool checkValid(string input)
                 break;
             }
 
+        }
+
+        if (isOper(input.at(i)))
+        {
+            operantCounter++;
+            if ((isDigit(input.at(i - 1)) && isDigit(input.at(i + 1))) || (isDigit(input.at(i - 1)) && input.at(i + 1) == '(') || (input.at(i - 1) == ')' && isDigit(input.at(i + 1))) || (input.at(i - 1) == ')' && input.at(i + 1) == '('))
+            {
+
+            }
+            else
+            {
+                ans = false;
+                break;
+            }
         }
 
         //Conditions to check if it is valid regarding F
@@ -662,7 +677,7 @@ bool checkValid(string input)
             openCounter++;
 
             //if it is the very first one in the input or right after the e with digits right after
-            if (i == input.length()-1 || isOper(input.at(i + 1)))
+            if (i == input.length() - 1 || isOper(input.at(i + 1)))
             {
                 ans = false;
                 break;
@@ -709,9 +724,14 @@ bool checkValid(string input)
             }
 
         }
+        if (operantCounter == 0)
+        {
+            ans = false;
+            break;
+        }
     }
 
-        
+
 
     return ans;
 }
@@ -722,21 +742,21 @@ int main() {
     string input;
     bool check;
     float answer;
-    for(;true;){
+    for (; true;) {
         cout << "Enter an expression with valid f literals: " << endl;
         //TEMPORARY TEST CASE
         //input = "((1.2f+4.5f*3.4e3f)*2.34f-2.3f)*6.5f";
         //input = "3.3 + 2.0f * 3.1";
         getline(cin, input);
-        if(input == "q"){
+        if (input == "q") {
             break;
         }
         //cin.getline(input, 100); WE ALSO NEED TEST CASES FOR INVALID INPUTS
         //Trims whitespace from input
         string trimmed = trimWhiteSpace(input);
         check = checkValid(trimmed);
-        if(check==0){
-            cout<<"Invalid Expression" << endl;
+        if (check == 0) {
+            cout << "Invalid Expression" << endl;
             continue;
         }
         cout << check << endl;
@@ -750,4 +770,3 @@ int main() {
     }
     return 0;
 }
-
